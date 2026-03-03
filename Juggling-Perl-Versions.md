@@ -111,8 +111,8 @@ Finally, test _man_ capabilities. When I try _man perl_, the manpage appears. Th
 Summary of my perl5 (revision 5.0 version 6 subversion 1) configuration:
   Platform:
     osname=linux, osvers=2.4.16-6mdksmp, archname=i386-linux
-    uname='linux bi.mandrakesoft.com 2.4.16-6mdksmp #1 smp sat dec 8 	04:02:48 cet 2001 i686 unknown '
-    config\_args='-des -Darchname=i386-linux -Dd\_dosuid -Ud\_csh -			Duseshrplib -Doptimize=-O3 -fomit-frame-pointer -pipe -			mcpu=pentiumpro -march=i586 -ffast-math -fno-strength-			reduce -Dprefix=/usr -Di\_ndbm -Di\_gdbm -Di\_shadow -			Di\_syslog -Uuselargefiles -Dman1dir=/usr/share/man/man1 -			**Dman3dir=/usr/lib/perl5/man/man3**'
+    uname='linux bi.mandrakesoft.com 2.4.16-6mdksmp #1 smp sat dec 8 04:02:48 cet 2001 i686 unknown '
+    config\_args='-des -Darchname=i386-linux -Dd\_dosuid -Ud\_csh -Duseshrplib -Doptimize=-O3 -fomit-frame-pointer -pipe -mcpu=pentiumpro -march=i586 -ffast-math -fno-strength-reduce -Dprefix=/usr -D_ndbm -D_gdbm -D_shadow_syslog -Uuselargefiles -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/lib/perl5/man/man3'
 ```
 
 The flag _\-Dman3dir_ defines a location for module manpages that is not going to appear in a default manpath due to its location, which is not "near" a PATH entry. Even if this path did appear in the default manpath, it would not help us. Without a MANPATH variable to manipulate, we are not going to be able to swap in manpages that correspond to the version of Perl that we want to change. So, the first order of business is to fix this.
@@ -224,7 +224,7 @@ Do you want to install perl as /usr/bin/perl? \[y\] **n**
 Where do the main Perl5 manual pages (source) go? (~name ok)
 \[/opt/perl/man/man1\] **/opt/perl/man/5.8.0/man1**
 
-Pathname where the add-on public executables should be installed? 			(~name ok) \[/opt/perl/bin\] /opt/perl/bin/5.8.0
+Pathname where the add-on public executables should be installed? (~name ok) \[/opt/perl/bin\] /opt/perl/bin/5.8.0
 ```
 
 Subsequent questions will have their defaults altered based on these answers. (For example, we will not need to explicitly set the _man_ directory for modules \[section 3\]. Configure is smart enough to change the default to /opt/perl/man/5.8.0/man3 given the setting of man1.) I do not show those questions here since all you have to do is hit RETURN to take the now modified defaults. In order to make installation a bit smoother, create the directory
