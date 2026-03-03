@@ -111,8 +111,8 @@ Finally, test _man_ capabilities. When I try _man perl_, the manpage appears. Th
 Summary of my perl5 (revision 5.0 version 6 subversion 1) configuration:
   Platform:
     osname=linux, osvers=2.4.16-6mdksmp, archname=i386-linux
-    uname='linux bi.mandrakesoft.com 2.4.16-6mdksmp #1 smp sat dec 8 04:02:48 cet 2001 i686 unknown '
-    config\_args='-des -Darchname=i386-linux -Dd\_dosuid -Ud\_csh -Duseshrplib -Doptimize=-O3 -fomit-frame-pointer -pipe -mcpu=pentiumpro -march=i586 -ffast-math -fno-strength-reduce -Dprefix=/usr -D_ndbm -D_gdbm -D_shadow_syslog -Uuselargefiles -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/lib/perl5/man/man3'
+    uname='linux bi.mandrakesoft.com 2.4.16-6mdksmp #1 smp sat dec 8 04:02:48 cet 2001 i686 unknown'
+    config_args='-des -Darchname=i386-linux -Dd_dosuid -Ud_csh -Duseshrplib -Doptimize=-O3 -fomit-frame-pointer -pipe -mcpu=pentiumpro -march=i586 -ffast-math -fno-strength-reduce -Dprefix=/usr -D_ndbm -D_gdbm -D_shadow_syslog -Uuselargefiles -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/lib/perl5/man/man3'
 ```
 
 The flag _\-Dman3dir_ defines a location for module manpages that is not going to appear in a default manpath due to its location, which is not "near" a PATH entry. Even if this path did appear in the default manpath, it would not help us. Without a MANPATH variable to manipulate, we are not going to be able to swap in manpages that correspond to the version of Perl that we want to change. So, the first order of business is to fix this.
