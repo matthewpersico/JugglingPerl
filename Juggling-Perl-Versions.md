@@ -6,7 +6,7 @@ _The Perl Journal_ January 2003
 
 ### By Matthew O. Persico
 
-_This article was published in The Perl Journal in January of 2003. The first releases of [plenv]() and [perlbrew]() appear to be in 2013 and 2010 respectively. Keep that in mind as you read._
+_This article was published in The Perl Journal in January of 2003. The first releases of [plenv](https://github.com/tokuhirom/plenv) and [perlbrew](https://metacpan.org/pod/App::perlbrew) appear to be in 2013 and 2010 respectively. Keep that in mind as you read._
 
 - - -
 
