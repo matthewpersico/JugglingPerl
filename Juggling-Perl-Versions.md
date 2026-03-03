@@ -64,7 +64,23 @@ First, execute the command _which perl_. In this case, the result is /usr/bin/pe
 
 2\. It is on a directory in the PATH.
 
-Next, execute _perl -V_. We ignore the build information for the moment and focus on the tail end of the output, which is shown in <a name="re1"></a>[Example 1](Juggling-Perl-Versions-ex1.md).
+Next, execute _perl -V_. We ignore the build information for the moment and focus on the tail end of the output, which is shown in Example 1.
+
+#### Example 1
+
+```
+Characteristics of this binary (from libperl):
+  Compile-time options:
+  Built under linux
+  Compiled at Feb 21 2002 01:00:32
+  @INC:
+    /usr/lib/perl5/5.6.1/i386-linux
+    /usr/lib/perl5/5.6.1
+    /usr/lib/perl5/site\_perl/5.6.1/i386-linux
+    /usr/lib/perl5/site\_perl/5.6.1
+    /usr/lib/perl5/site\_perl
+    .
+```
 
 What this tells us is that there are no other known locations for Perl modules other than the default locations. Practically, that means that PERL5LIB is not set and that all modules added to the system must be installed into /usr/lib/perl5.
 
@@ -87,7 +103,17 @@ make test install PREFIX=/opt/perl
 
 You'll notice that I set PREFIX at installation time. This is a result of the environment in which I was trained. By setting PREFIX at install time instead of Makefile at creation time, I can use the same tarball tree to install to a local testing area, a global testing area, and a production area without having to reexecute _perl Makefile.PL_ each time. You may feel differently. Feel free to specify PREFIX at _perl Makefile.PL_ time. The only caveat is that you must be consistent. Pick one method and stick with it. I vaguely recall that in one version of Perl, the end location of the module was different depending on which method was used. This is another example of why I am demonstrating the empirical method of building this framework.
 
-Finally, test _man_ capabilities. When I try _man perl_, the manpage appears. This indicates that we can get to the manpages in Section 1 for Perl commands. When I try _man ExtUtils::MakeMaker_, the manpage does not appear. A quick check of the environment reveals that there is no MANPATH environment variable set. Therefore, _man_ is using its own heuristics to determine where manpages are located. By reexamining the top of the _perl -V_ output, we see the information in <a name="re2"></a>[Example 2](Juggling-Perl-Versions-ex2.md).
+Finally, test _man_ capabilities. When I try _man perl_, the manpage appears. This indicates that we can get to the manpages in Section 1 for Perl commands. When I try _man ExtUtils::MakeMaker_, the manpage does not appear. A quick check of the environment reveals that there is no MANPATH environment variable set. Therefore, _man_ is using its own heuristics to determine where manpages are located. By reexamining the top of the _perl -V_ output, we see the information in Example 2.
+
+#### Example 2: Determining default manpath information from the output of perl -V.
+
+```
+Summary of my perl5 (revision 5.0 version 6 subversion 1) configuration:
+  Platform:
+    osname=linux, osvers=2.4.16-6mdksmp, archname=i386-linux
+    uname='linux bi.mandrakesoft.com 2.4.16-6mdksmp #1 smp sat dec 8 	04:02:48 cet 2001 i686 unknown '
+    config\_args='-des -Darchname=i386-linux -Dd\_dosuid -Ud\_csh -			Duseshrplib -Doptimize=-O3 -fomit-frame-pointer -pipe -			mcpu=pentiumpro -march=i586 -ffast-math -fno-strength-			reduce -Dprefix=/usr -Di\_ndbm -Di\_gdbm -Di\_shadow -			Di\_syslog -Uuselargefiles -Dman1dir=/usr/share/man/man1 -			**Dman3dir=/usr/lib/perl5/man/man3**'
+```
 
 The flag _\-Dman3dir_ defines a location for module manpages that is not going to appear in a default manpath due to its location, which is not "near" a PATH entry. Even if this path did appear in the default manpath, it would not help us. Without a MANPATH variable to manipulate, we are not going to be able to swap in manpages that correspond to the version of Perl that we want to change. So, the first order of business is to fix this.
 
@@ -129,7 +155,30 @@ Take a look at the line _addpath -f MANPATH /usr/_lib/perl5/man. Given that this
 
 PERL\_CURRENT\_VERSION is defined in order to keep track of what version we are currently running. _addpath_ is a function that will add a directory to a PATH-like environment variable. It makes use of the PERL\_DEFAULT variable. <a name="rl1"></a>See [Listing 1](#listing-1) for the code. _addpath_ and _delpath_ are translations of shell scripts and are described in the following _Linux Journal_ articles: http://www .linuxjournal.com/article.php?sid=3645, http://www.linuxjournal .com/article.php?sid=3768, and http://www.linuxjournal.com/ article.php?sid=3935.
 
-In this case, we add /opt/perl/bin to PATH because there are modules (such as DBI) that create binaries. This is where they will end up when installed. Why not /opt/perl/bin/5.6.1 or /opt/ perl/5.6.1/bin? Because when we execute _make install PREFIX=/opt/perl_, the remainder of the paths are taken from Perl's current configuration, and the configuration, in this case, is to put all binaries into $PREFIX/bin. _add\__perl5lib is another function, presented in <a name="re3"></a>[Example 3](Juggling-Perl-Versions-ex3.md) with its relatives.
+In this case, we add /opt/perl/bin to PATH because there are modules (such as DBI) that create binaries. This is where they will end up when installed. Why not /opt/perl/bin/5.6.1 or /opt/ perl/5.6.1/bin? Because when we execute _make install PREFIX=/opt/perl_, the remainder of the paths are taken from Perl's current configuration, and the configuration, in this case, is to put all binaries into $PREFIX/bin. _add\__perl5lib is another function, presented in Example 3 with its relatives.
+
+#### Example 3: The add\_perl5lib function.
+
+```
+add\_perl5lib () {
+  guts\_perl5lib ${1} add
+}
+
+del\_perl5lib ()
+{
+  guts\_perl5lib ${1} del
+}
+
+guts\_perl5lib ()
+{
+  for i in $(find ${1}/lib -name ${PERL\_CURRENT\_VERSION} -type d | \\
+ sort -r)
+  do
+    ${2}path -f -p PERL5LIB $(dirname $i)
+  done
+  export PERL5LIB
+}
+```
 
 We find the directories corresponding to the current version of Perl under the requested top-level directory and add or delete them from the PERL5LIB environment variable.
 
@@ -158,7 +207,27 @@ Up to this point, this all has been an interesting exercise, but without a secon
 
 ### Build a New Version of Perl
 
-I will demonstrate by installing version 5.8.0 into /opt/perl. During the configure phase (which I invoke using sh Configure), I take all the default values except for the prompts shown in <a name="re4"></a>[Example 4](Juggling-Perl-Versions-ex4.md). Subsequent questions will have their defaults altered based on these answers. (For example, we will not need to explicitly set the _man_ directory for modules \[section 3\]. Configure is smart enough to change the default to /opt/perl/man/5.8.0/man3 given the setting of man1.) I do not show those questions here since all you have to do is hit RETURN to take the now modified defaults. In order to make installation a bit smoother, create the directory
+I will demonstrate by installing version 5.8.0 into /opt/perl. During the configure phase (which I invoke using sh Configure), I take all the default values except for the prompts shown in Example 4.
+
+#### Example 4: Configure questions for which you must override the defaults.
+
+```
+Installation prefix to use? (~name ok) \[/usr/local\] **/opt/perl**
+
+Pathname where the public executables will reside? (~name ok) \[/opt/perl/bin\] **/opt/perl/bin/5.8.0**
+
+Many scripts expect perl to be installed as /usr/bin/perl.
+I can install the perl you are about to compile also as /usr/bin/perl
+(in addition to /opt/perl/bin/5.8.0/perl).
+Do you want to install perl as /usr/bin/perl? \[y\] **n**
+
+Where do the main Perl5 manual pages (source) go? (~name ok)
+\[/opt/perl/man/man1\] **/opt/perl/man/5.8.0/man1**
+
+Pathname where the add-on public executables should be installed? 			(~name ok) \[/opt/perl/bin\] /opt/perl/bin/5.8.0
+```
+
+Subsequent questions will have their defaults altered based on these answers. (For example, we will not need to explicitly set the _man_ directory for modules \[section 3\]. Configure is smart enough to change the default to /opt/perl/man/5.8.0/man3 given the setting of man1.) I do not show those questions here since all you have to do is hit RETURN to take the now modified defaults. In order to make installation a bit smoother, create the directory
 
 /opt/perl/bin/5.8.0
 
@@ -174,7 +243,23 @@ make test install
 
 We now need to get the location of the 5.8.0 Perl binary, modules and manpages.
 
-The location of _perl_ is easy since we specified it: /opt/perl/ bin/5.8.0. Make sure that PERL5LIB is unset and execute _/opt/perl/ bin/5.8.0/perl -V_. Again, we are only interested in the tail; see <a name="re5"></a>[Example 5](Juggling-Perl-Versions-ex5.md).
+The location of _perl_ is easy since we specified it: /opt/perl/ bin/5.8.0. Make sure that PERL5LIB is unset and execute _/opt/perl/ bin/5.8.0/perl -V_. Again, we are only interested in the tail; see Example 5.
+
+#### Example 5: The output of perl -V after installing 5.8.0.
+
+```
+Characteristics of this binary (from libperl):
+  Compile-time options: USE\_LARGE\_FILES
+  Built under linux
+  Compiled at Dec  3 2002 23:42:03
+  @INC:
+    /opt/perl/lib/5.8.0/i686-linux
+    /opt/perl/lib/5.8.0
+    /opt/perl/lib/site\_perl/5.8.0/i686-linux
+    /opt/perl/lib/site\_perl/5.8.0
+    /opt/perl/lib/site\_perl
+    .
+```
 
 Now, unlike our 5.6.1 installation, we can proceed without setting PERL5LIB and allow modules to be installed right into /opt/perl/lib/site\_perl. After all, we built this version and, therefore, have no default installation to preserve.
 
@@ -222,7 +307,23 @@ If you keep project-specific library locations, you can add them via arguments t
 
 swap\_perl 5.8.0 /opt/myCompany/yadayadayada
 
-The last lines in perl.sh should set the default Perl environment. <a name="re6"></a>[Example 6](Juggling-Perl-Versions-ex6.md) shows the specifics of our installation.
+The last lines in perl.sh should set the default Perl environment. Example 6 shows the specifics of our installation.
+
+#### Example 6: Setting the default Perl environment in perl.sh.
+
+```sh
+## PERL\_DEFAULT is used by various utilities that need to have
+## access to some version of Perl while we are in the middle of
+## swapping Perl versions. See addpath and delpath for example.
+export PERL\_DEFAULT=/usr/bin/perl
+
+## This setting tells swap\_perl that there is no current version to
+## swap out of before swapping in the requested version.
+export PERL\_CURRENT\_VERSION='initial'
+
+## Do it
+swap\_perl 5.6.1
+```
 
 ### Perl Version Selection and the Shebang Line
 
