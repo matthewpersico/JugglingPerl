@@ -14,11 +14,11 @@ Managing change when you maintain a sizable Perl installation isn't easy. Inevit
 
 "Sure," you reply. "I'll get right on it." You download the tarball from CPAN, execute:
 
-> gtar zxvf Foo-Bar-1.68.tar.gz
->
-> cd Foo-Bar-1.68
->
-> perl Makefile.PL
+```sh
+gtar zxvf Foo-Bar-1.68.tar.gz
+cd Foo-Bar-1.68
+perl Makefile.PL
+```
 
 and then it hits you:
 
