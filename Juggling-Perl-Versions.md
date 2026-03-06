@@ -92,11 +92,11 @@ I am going to establish `/opt/perl/lib` as the location for my new modules. I am
 
 The exact setting of `PERL5LIB` that is needed to produce a valid @INC seems to have changed from release 5.004_04 through 5.005, 5.6.0, 5.6.1, and 5.8.0. Furthermore, the end result is highly dependent on where and how Perl is configured and installed in the first place. Rather than try to determine the settings via the documentation, I suggest you determine it empirically with these steps:
 
-1\. Create `/opt/perl`.
+1. Create `/opt/perl`.
 
-2\. Grab any module from CPAN.
+2. Grab any module from CPAN.
 
-3\. Unwind the tarball and perform the magic incantations:
+3. Unwind the tarball and perform the magic incantations:
 
 ```sh
 perl Makefile.PL
