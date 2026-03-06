@@ -209,7 +209,7 @@ You will notice that the actions in the `unset` function are performed in invers
 
 Add all of this code to `perl.sh` and all the defaults are now defined for your out-of-the-box version of Perl.
 
-As a last note, notice that we do not add or delete the default path for Perl from `PATH`. There are a number of reasons. In most cases, the path for the default version of Perl is shared. In this case, removing `/usr/bin` from`PATH` would have dire consequences. A similar argument applies to the default MANPATH entry `/usr/share/man` where the section 1 manpages live.
+As a last note, notice that we do not add or delete the default path for Perl from `PATH`. There are a number of reasons. In most cases, the path for the default version of Perl is shared. In this case, removing `/usr/bin` from`PATH` would have dire consequences. A similar argument applies to the default `MANPATH` entry `/usr/share/man` where the section 1 manpages live.
 
 You always want to leave a minimum version of Perl in the`PATH` because the `addpath` and `delpath` utilities use Perl to do their magic.
 
@@ -279,7 +279,7 @@ We will create a function named `set_perl_5.8.0`. It will perform three function
 
 2\. Set `PERL5LIB` so that any extra libraries are found.
 
-3\. Set MANPATH so that the Perl manpages are located.
+3\. Set `MANPATH` so that the Perl manpages are located.
 
 Here is the code:
 
@@ -381,28 +381,28 @@ The directory layout of Perl has evolved over the years. If any of the versions 
 
 Here is a summary of the steps needed to maintain multiple versions of Perl:
 
-1\. Determine the default locations of the Perl binary, modules, and manpages.
+1. Determine the default locations of the Perl binary, modules, and manpages.
 
-2\. Create `set` and `unset` functions for this version of Perl. Place them in `perl.sh`.
+2. Create `set` and `unset` functions for this version of Perl. Place them in `perl.sh`.
 
-3\. Install new versions of Perl, taking care to isolate them in highly version-numbered directory structures.
+3. Install new versions of Perl, taking care to isolate them in highly version-numbered directory structures.
 
-4\. Determine the locations of the Perl binary, modules, and manpages for the new version.
+4. Determine the locations of the Perl binary, modules, and manpages for the new version.
 
-5\. Create `set` and `unset` functions for this version of Perl. Place them in `perl.sh`.
+5. Create `set` and `unset` functions for this version of Perl. Place them in `perl.sh`.
 
-6\. Add `swap_perl` to `perl.sh`. Add a command to swap in the default version at the bottom of `perl.sh`. Place `perl.sh` in /etc/profile.d.
+6. Add `swap_perl` to `perl.sh`. Add a command to swap in the default version at the bottom of `perl.sh`. Place `perl.sh` in /etc/profile.d.
 
-7\. Call `swap_perl` in your process before executing Perl scripts.
+7. Call `swap_perl` in your process before executing Perl scripts.
 
-8\. Change the shebang line of Perl scripts to use the `env` command, which will search the`PATH` for the desired version of Perl.
+8. Change the shebang line of Perl scripts to use the `env` command, which will search the`PATH` for the desired version of Perl.
 
 **TPJ**
 
 #### Listing 1
 
 ```sh
-\# -\*- ksh -\*-
+# -*- ksh -*-
 # =====================================================================
 # $Source: /home/cvs/repository/profiles/path_funcs.sh,v $
 # $Revision: 1.1 $
@@ -439,7 +439,7 @@ addpath()
     case $opt in
       p )
 	  pvar=$OPTARG
-	  eval pval=\\$$pvar
+	  eval pval=\$$pvar
 	  parg="-p $pvar=$pval"
 	  ;;
 
@@ -449,14 +449,14 @@ addpath()
     esac
   done
 
-  shift \`expr $OPTIND - 1\`
+  shift `expr $OPTIND - 1`
 
-  if \[ "$parg" = "" \]
+  if [ "$parg" = "" ]
   then
-    if \[ ! "$1" = "" \]
+    if [ ! "$1" = "" ]
     then
       pvar=$1
-      eval pval=\\$$pvar
+      eval pval=\$$pvar
       parg="-p $pvar=$pval"
       shift
     fi
@@ -482,7 +482,7 @@ use Getopt::Std;
 my %opts = ();
 my @verbose = ();
 my $usage = <<EOUSAGE;
-Usage: addpath \[-p\] <pathvar> \[-h\] \[-v\] \[-f|-b\] <dirspec> \[<dirspec> ...\]
+Usage: addpath [-p] <pathvar> [-h] [-v] [-f|-b] <dirspec> [<dirspec> ...]
        Idempotently adds <dirspec> to <pathvar>
        -p specifies <pathvar>. -p is optional
        -h prints usage
@@ -493,26 +493,26 @@ EOUSAGE
 ;
 
 ## Process options
-if (!getopts(q{hvp:fb},\\%opts)) {
-    die "$usage\\n";
+if (!getopts(q{hvp:fb},\%opts)) {
+    die "$usage\n";
 }
 
 if ($opts{h}) {
-    print STDERR "$usage\\n";
+    print STDERR "$usage\n";
     exit 0;
 }
 
 if(!defined($opts{p})) {
-    die "No pathvar defined\\n$usage\\n";
+    die "No pathvar defined\n$usage\n";
 }
 
 if (defined($opts{f}) and defined($opts{b})) {
-    die "-f and -b options are mutually exclusive\\n$usage";
+    die "-f and -b options are mutually exclusive\n$usage";
 }
 
 ## Process args
 if (!scalar(@ARGV)) {
-    die "\\nNo dirspec specified.\\n$usage\\n"
+    die "\nNo dirspec specified.\n$usage\n"
 }
 
 ## Pull the pathvar and value out of the option
@@ -560,12 +560,12 @@ for my $argv (@ARGV) {
 $pathval = join ($pathsep,
 		 sort {$pathsubs{$a} <=> $pathsubs{$b}} keys %pathsubs);
 
-print STDERR join("\\n",@verbose) if (defined($opts{v}));
+print STDERR join("\n",@verbose) if (defined($opts{v}));
 
 ## The shell will eval this:
 print "$pathvar=$pathval";
 
-' -- $parg $oarg $\*)
+' -- $parg $oarg $*)
 eval eval $results
 }
 ```
@@ -595,7 +595,7 @@ delpath()
     case $opt in
       p )
 	  pvar=$OPTARG
-	  eval pval=\\$$pvar
+	  eval pval=\$$pvar
 	  parg="-p $pvar=$pval"
 	  ;;
 
@@ -605,14 +605,14 @@ delpath()
     esac
   done
 
-  shift \`expr $OPTIND - 1\`
+  shift `expr $OPTIND - 1`
 
-  if \[ "$parg" = "" \]
+  if [ "$parg" = "" ]
   then
-    if \[ ! "$1" = "" \]
+    if [ ! "$1" = "" ]
     then
       pvar=$1
-      eval pval=\\$$pvar
+      eval pval=\$$pvar
       parg="-p $pvar=$pval"
       shift
     fi
@@ -638,7 +638,7 @@ use Getopt::Std;
 my %opts = ();
 my @verbose = ();
 my $usage = <<EOUSAGE;
-Usage: delpath \[-p\] <pathvar> \[-h\] \[-v\] \[-e\] \[-n\] <dirspec> \[<dirspec> ...\]
+Usage: delpath [-p] <pathvar> [-h] [-v] [-e] [-n] <dirspec> [<dirspec> ...]
        Removes <dirspec> from <pathvar>
        -p specifies <pathvar>. -p is optional
        -h prints usage
@@ -649,22 +649,22 @@ EOUSAGE
 ;
 
 ## Process options
-if (!getopts(q{hvp:en},\\%opts)) {
-    die "$usage\\n";
+if (!getopts(q{hvp:en},\%opts)) {
+    die "$usage\n";
 }
 
 if ($opts{h}) {
-    print STDERR "$usage\\n";
+    print STDERR "$usage\n";
     exit 0;
 }
 
 if(!defined($opts{p})) {
-    die "No pathvar defined.\\n$usage\\n";
+    die "No pathvar defined.\n$usage\n";
 }
 
 ## Process args
 if (!scalar(@ARGV)) {
-    die "\\nNo dirspec specified.\\n$usage\\n"
+    die "\nNo dirspec specified.\n$usage\n"
 }
 
 # Pull the pathvar and value out of the option
@@ -724,12 +724,12 @@ $pathval = join ($pathsep,
 		 sort {$pathsubs{$a} <=> $pathsubs{$b}} keys %pathsubs);
 
 NOTHING_TO_DO:
-print STDERR join("\\n",@verbose) if (defined($opts{v}));
+print STDERR join("\n",@verbose) if (defined($opts{v}));
 
 ## The shell will eval this:
 print "$pathvar=$pathval";
 
-' -- $parg $oarg $\*)
+' -- $parg $oarg $*)
 eval eval $results
 }
 ```
@@ -747,7 +747,7 @@ swap_perl()
     5.6.1 | 5.8.0 )
 	    ok=1
 	    ;;
-    \*)
+    *)
        echo "Your choices are 5.6.1 and 5.8.0. Bye."
        return 1
        ;;
@@ -757,13 +757,13 @@ swap_perl()
   ## Determine what version is to be swapped out and do so, if
   ## possible
 
-  if \[ "$PERL_CURRENT_VERSION" = "" \]
+  if [ "$PERL_CURRENT_VERSION" = "" ]
   then
     echo "No PERL_CURRENT_VERSION defined to swap out. Continuing..."
-  elif \[ "$PERL_CURRENT_VERSION" = "initial" \]
+  elif [ "$PERL_CURRENT_VERSION" = "initial" ]
   then
     echo "Silently skip unsetting Perl" > /dev/null
-  elif \[ "$PERL_CURRENT_VERSION" = "$to" \]
+  elif [ "$PERL_CURRENT_VERSION" = "$to" ]
   then
     echo "Current Perl version is already $to. Exiting."
     return
@@ -784,8 +784,8 @@ swap_perl()
   ## libraries to the PERL5LIB variable by specifying the root
   ## directories as arguments after the version number.
 
-  adds="$\*"
-  if \[ ! "$adds" = "" \]
+  adds="$*"
+  if [ ! "$adds" = "" ]
   then
     for i in $adds
     do
