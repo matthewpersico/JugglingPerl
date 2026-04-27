@@ -20,7 +20,7 @@ cd Foo-Bar-1.68
 perl Makefile.PL
 ```
 
-and then it hits you:
+and then you see it:
 
 ```sh
 Perl v5.8.0 required—this is only v5.6.1, stopped at Bar.pm line 2.
@@ -44,7 +44,7 @@ It seems nearly impossible to safely upgrade Perl without a massive amount of te
 
 In order to maintain multiple versions of Perl in an environment, we set down the following principles:
 
-*   **Do no harm.** A user or process that knows nothing about our  Perl-swapping environment should be presented with the default Perl environment that comes "out-of-the-box." This means that all paths should have default values that allow a process to use Perl without having to explicitly call any special functions or explicitly set any special environment variables.
+*   **Do no harm.** A user or process that knows nothing about our Perl-swapping environment should be presented with the default Perl environment that comes "out-of-the-box." This means that all paths should have default values that allow a process to use Perl without having to explicitly call any special functions or explicitly set any special environment variables.
 *   **No pain, all gain.** The method for changing Perl versions should be as painless as possible. Ideally, one command should do it.
 *   **You can go back.** There is no reason why the default version of Perl shouldn't be considered just another version of Perl to be swapped. You should be able to switch back to the default version of Perl as easily as to any other version.
 
@@ -64,7 +64,7 @@ First, execute the command `which perl`. In this case, the result is `/usr/bin/p
 
 1\. Where the Perl binary lives.
 
-2\. It is on a directory in the `PATH`.
+2\. It is on a directory in `PATH`.
 
 Next, execute `perl -V`. We ignore the build information for the moment and focus on the tail end of the output, which is shown in Example 1.
 
@@ -179,8 +179,7 @@ del_perl5lib ()
 
 guts_perl5lib ()
 {
-  for i in $(find ${1}/lib -name ${PERL_CURRENT_VERSION} -type d | \\
-  sort -r)
+  for i in $(find ${1}/lib -name ${PERL_CURRENT_VERSION} -type d | sort -r)
   do
     ${2}path -f -p PERL5LIB $(dirname $i)
   done
@@ -211,7 +210,7 @@ Add all of this code to `perl.sh` and all the defaults are now defined for your 
 
 As a last note, notice that we do not add or delete the default path for Perl from `PATH`. There are a number of reasons. In most cases, the path for the default version of Perl is shared. In this case, removing `/usr/bin` from`PATH` would have dire consequences. A similar argument applies to the default `MANPATH` entry `/usr/share/man` where the section 1 manpages live.
 
-You always want to leave a minimum version of Perl in the`PATH` because the `addpath` and `delpath` utilities use Perl to do their magic.
+You always want to leave a minimum version of Perl in `PATH` because the `addpath` and `delpath` utilities use Perl to do their magic.
 
 Up to this point, this all has been an interesting exercise, but without a second version of Perl, there is really no reason to have gone through all this work. Let's install another version of Perl.
 
@@ -222,17 +221,17 @@ I will demonstrate by installing version 5.8.0 into `/opt/perl`. During the conf
 #### Example 4: Configure questions for which you must override the defaults.
 
 ```
-Installation prefix to use? (~name ok) \[/usr/local\] **/opt/perl**
+Installation prefix to use? (~name ok) [/usr/local] /opt/perl
 
-Pathname where the public executables will reside? (~name ok) \[/opt/perl/bin\] **/opt/perl/bin/5.8.0**
+Pathname where the public executables will reside? (~name ok) \[/opt/perl/bin\] /opt/perl/bin/5.8.0
 
 Many scripts expect perl to be installed as /usr/bin/perl.
 I can install the perl you are about to compile also as /usr/bin/perl
 (in addition to /opt/perl/bin/5.8.0/perl).
-Do you want to install perl as /usr/bin/perl? \[y\] **n**
+Do you want to install perl as /usr/bin/perl? \[y\] n
 
 Where do the main Perl5 manual pages (source) go? (~name ok)
-\[/opt/perl/man/man1\] **/opt/perl/man/5.8.0/man1**
+\[/opt/perl/man/man1\] /opt/perl/man/5.8.0/man1
 
 Pathname where the add-on public executables should be installed? (~name ok) \[/opt/perl/bin\] /opt/perl/bin/5.8.0
 ```
@@ -395,7 +394,7 @@ Here is a summary of the steps needed to maintain multiple versions of Perl:
 
 7. Call `swap_perl` in your process before executing Perl scripts.
 
-8. Change the shebang line of Perl scripts to use the `env` command, which will search the`PATH` for the desired version of Perl.
+8. Change the shebang line of Perl scripts to use the `env` command, which will search `PATH` for the desired version of Perl.
 
 **TPJ**
 
