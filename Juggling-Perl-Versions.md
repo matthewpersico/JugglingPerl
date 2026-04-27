@@ -10,7 +10,7 @@ _This article was published in The Perl Journal in January of 2003. The first re
 
 - - -
 
-Managing change when you maintain a sizable Perl installation isn't easy. Inevitably, one of your colleagues will come to you and say, "I was looking at CPAN and you know, I could save myself two weeks of work if I could install the Foo::Bar module for use in my Yadayadayada project. Can we get it installed?"
+Managing change when you maintain a sizable Perl installation isn't easy. Inevitably, one of your colleagues will come to you and say, "I was looking at CPAN and you know, I could save myself two weeks of work if I could install the `Foo::Bar` module for use in my Yadayadayada project. Can we get it installed?"
 
 "Sure," you reply. "I'll get right on it." You download the tarball from CPAN, execute:
 
@@ -26,7 +26,7 @@ and then you see it:
 Perl v5.8.0 required—this is only v5.6.1, stopped at Bar.pm line 2.
 ```
 
-Okay, now what? Well, you can try to find a version of Foo::Bar that works with 5.6.1, but the odds are there isn't one. Even if there is such a version, it is probably old enough that it is missing needed functionality or has bugs that are fixed in later versions.
+Okay, now what? Well, you can try to find a version of `Foo::Bar` that works with 5.6.1, but the odds are there isn't one. Even if there is such a version, it is probably old enough that it is missing needed functionality or has bugs that are fixed in later versions.
 
 You could say, "Sorry, we can't support it," and you might even get away with that for just one module or just one project.
 
@@ -223,17 +223,17 @@ I will demonstrate by installing version 5.8.0 into `/opt/perl`. During the conf
 ```
 Installation prefix to use? (~name ok) [/usr/local] /opt/perl
 
-Pathname where the public executables will reside? (~name ok) \[/opt/perl/bin\] /opt/perl/bin/5.8.0
+Pathname where the public executables will reside? (~name ok) [/opt/perl/bin] /opt/perl/bin/5.8.0
 
 Many scripts expect perl to be installed as /usr/bin/perl.
 I can install the perl you are about to compile also as /usr/bin/perl
 (in addition to /opt/perl/bin/5.8.0/perl).
-Do you want to install perl as /usr/bin/perl? \[y\] n
+Do you want to install perl as /usr/bin/perl? [y] n
 
 Where do the main Perl5 manual pages (source) go? (~name ok)
-\[/opt/perl/man/man1\] /opt/perl/man/5.8.0/man1
+[/opt/perl/man/man1] /opt/perl/man/5.8.0/man1
 
-Pathname where the add-on public executables should be installed? (~name ok) \[/opt/perl/bin\] /opt/perl/bin/5.8.0
+Pathname where the add-on public executables should be installed? (~name ok) [/opt/perl/bin] /opt/perl/bin/5.8.0
 ```
 
 Subsequent questions will have their defaults altered based on these answers. (For example, we will not need to explicitly set the `man` directory for modules \[section 3\]. Configure is smart enough to change the default to `/opt/perl/man/5.8.0/man3` given the setting of man1.) I do not show those questions here since all you have to do is hit RETURN to take the now modified defaults. In order to make installation a bit smoother, create the directory `/opt/perl/bin/5.8.0`
@@ -400,6 +400,8 @@ Here is a summary of the steps needed to maintain multiple versions of Perl:
 
 #### Listing 1
 
+[Back to Article](#rl1)
+
 ```sh
 # -*- ksh -*-
 # =====================================================================
@@ -437,14 +439,14 @@ addpath()
   do
     case $opt in
       p )
-	  pvar=$OPTARG
-	  eval pval=\$$pvar
-	  parg="-p $pvar=$pval"
-	  ;;
+	    pvar=$OPTARG
+	    eval pval=\$$pvar
+	    parg="-p $pvar=$pval"
+	    ;;
 
       h | v | f | b )
-		      oarg="$oarg -$opt"
-		      ;;
+        oarg="$oarg -$opt"
+	    ;;
     esac
   done
 
@@ -542,22 +544,22 @@ for my $argv (@ARGV) {
     ## This is a complete comparison, no need to take care
     ## of your path posssibly being a portion of an existing path.
     if(defined($pathsubs{$argv})) {
-	push @verbose, "$argv already present in $pathvar";
+        push @verbose, "$argv already present in $pathvar";
     } else {
-	## Stick it where it belongs
-	if(defined($opts{f})) {
-	    $pathsubs{$argv} = --$pathfront;
-	    push @verbose, "Pre-pended path $argv";
-	} else {
-	    $pathsubs{$argv} = ++$pathback;
-	    push @verbose, "Appended path $argv";
-	}
+        ## Stick it where it belongs
+        if(defined($opts{f})) {
+            $pathsubs{$argv} = --$pathfront;
+            push @verbose, "Pre-pended path $argv";
+        } else {
+            $pathsubs{$argv} = ++$pathback;
+            push @verbose, "Appended path $argv";
+        }
     }
 }
 
 ## Put humpty dumpty back together again
 $pathval = join ($pathsep,
-		 sort {$pathsubs{$a} <=> $pathsubs{$b}} keys %pathsubs);
+                 sort {$pathsubs{$a} <=> $pathsubs{$b}} keys %pathsubs);
 
 print STDERR join("\n",@verbose) if (defined($opts{v}));
 
@@ -572,6 +574,8 @@ eval eval $results
 [Back to Article](#rl1)
 
 #### Listing 2
+
+[Back to Article](#rl2)
 
 ```sh
 delpath()
@@ -593,14 +597,14 @@ delpath()
   do
     case $opt in
       p )
-	  pvar=$OPTARG
-	  eval pval=\$$pvar
-	  parg="-p $pvar=$pval"
-	  ;;
+        pvar=$OPTARG
+        eval pval=\$$pvar
+        parg="-p $pvar=$pval"
+        ;;
 
       h | v | e | n )
-		      oarg="$oarg -$opt"
-		      ;;
+        oarg="$oarg -$opt"
+        ;;
     esac
   done
 
@@ -695,17 +699,17 @@ for my $argv (@ARGV) {
     my @matches = ();
     my $msg = undef;
     if(defined($opts{e})) {
-	$msg = 'Regexp';
-	@matches = grep {$_ =~ /$argv/} keys %pathsubs;
+        $msg = 'Regexp';
+        @matches = grep {$_ =~ /$argv/} keys %pathsubs;
     } else {
-	$msg = 'Path';
-	@matches = grep {$_ eq $argv} keys %pathsubs;
+        $msg = 'Path';
+        @matches = grep {$_ eq $argv} keys %pathsubs;
     }
     if(scalar(@matches)) {
-	delete @pathsubs{@matches};
-	push @verbose, "Deleted paths ", join(",",@matches);
+        delete @pathsubs{@matches};
+        push @verbose, "Deleted paths ", join(",",@matches);
     } else {
-	push @verbose, "$msg $argv not found";
+        push @verbose, "$msg $argv not found";
     }
 }
 
@@ -713,14 +717,14 @@ for my $argv (@ARGV) {
 if(defined($opts{n})) {
     @matches = grep {! -d $_} keys %pathsubs;
     if(scalar(@matches)) {
-	delete @pathsubs{@matches};
-	push @verbose, "Deleted non-existent paths ", join(",",@matches);
+        delete @pathsubs{@matches};
+        push @verbose, "Deleted non-existent paths ", join(",",@matches);
     }
 }
 
 ## Put humpty dumpty back together again
 $pathval = join ($pathsep,
-		 sort {$pathsubs{$a} <=> $pathsubs{$b}} keys %pathsubs);
+                 sort {$pathsubs{$a} <=> $pathsubs{$b}} keys %pathsubs);
 
 NOTHING_TO_DO:
 print STDERR join("\n",@verbose) if (defined($opts{v}));
@@ -737,6 +741,8 @@ eval eval $results
 
 #### Listing 3
 
+[Back to Article](#rl3)
+
 ```sh
 swap_perl()
 {
@@ -744,8 +750,8 @@ swap_perl()
   to=$1
   case $to in
     5.6.1 | 5.8.0 )
-	    ok=1
-	    ;;
+        ok=1
+          ;;
     *)
        echo "Your choices are 5.6.1 and 5.8.0. Bye."
        return 1
