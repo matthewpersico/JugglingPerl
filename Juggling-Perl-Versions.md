@@ -6,7 +6,9 @@ _The Perl Journal_ January 2003
 
 ### By Matthew O. Persico
 
-_This article was published in The Perl Journal in January of 2003. The first releases of [plenv](https://github.com/tokuhirom/plenv) and [perlbrew](https://metacpan.org/pod/App::perlbrew) appear to be in 2013 and 2010 respectively. Keep that in mind as you read._
+_This article was originally published in The Perl Journal in January of 2003. The first releases of [plenv](https://github.com/tokuhirom/plenv) and [perlbrew](https://metacpan.org/pod/App::perlbrew) appear to be in 2013 and 2010 respectively. Please, keep that in mind as you read._
+
+_The original website for The Perl Journal no longer exists. An archive of this article can be found on a personal site that seems to be hosting the old [Dr. Dobbs](https://jacobfilipp.com/DrDobbs/articles/TPJ/2003/0301/0301a/0301a.htm) site. Since that seems rather tenuous to me, I took that text and have now rehosted the article here._
 
 - - -
 
